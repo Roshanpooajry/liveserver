@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="mycart.css">
+</head>
+<body>
+    <div id="cart-page" class="container">
+        <h2>Your Cart</h2>
+        <div id="cart-items" class="row">
+            <!-- Cart items will be dynamically added here -->
+        </div>
+        <div id="cart-total">
+            <h3>Total: <span id="total-price">&#8377;0.00</span></h3>
+        </div>
+    </div>
+
+    <script>
+    // Display cart items on the cart page
+    document.addEventListener('DOMContentLoaded', function () {
+        const cartItemsContainer = document.getElementById('cart-items');
+        const totalPriceContainer = document.getElementById('total-price');
+
+        // Retrieve cart from localStorage
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        // Function to update the total price
+        function updateTotalPrice() {
+            let totalPrice = 0;
+            cart.forEach(item => {
+                totalPrice += parseFloat(item.price.replace('₹', '').replace(',', ''));
+            });
+            totalPriceContainer.textContent = `₹${totalPrice.toFixed(2)}`;
+        }
+
+        // Function to render cart items
+        function renderCartItems() {
+            cartItemsContainer.innerHTML = ''; // Clear previous items
+
+            cart.forEach((item, index) => {
+                // Create a new cart item element
+                const cartItem = document.createElement('div');
+                cartItem.classList.add('col-md-4', 'col-sm-6', 'col-xs-12', 'product-item');
+                cartItem.innerHTML = `
+                    <figure class="product-style">
+                        <img src="${item.imgSrc}" alt="${item.title}" class="product-image">
+                    </figure>
+                    <figcaption>
+                        <h3>${item.title}</h3>
+                        <span>${item.author}</span>
+                        <div class="item-price">${item.price}</div>
+                        <button class="remove-from-cart" data-index="${index}">Remove</button>
+                    </figcaption>
+                `;
+
+                // Add cart item to the container
+                cartItemsContainer.appendChild(cartItem);
+            });
+
+            // Update the total price
+            updateTotalPrice();
+        }
+
+        // Handle removing items from the cart
+        cartItemsContainer.addEventListener('click', function (event) {
+            if (event.target.classList.contains('remove-from-cart')) {
+                const itemIndex = event.target.getAttribute('data-index');
+                // Remove item from the cart array
+                cart.splice(itemIndex, 1);
+                // Save updated cart to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                // Re-render the cart items and update the total
+                renderCartItems();
+            }
+        });
+
+        // Initial render of cart items
+        renderCartItems();
+    });
+   
+
+    </script>
+</body>
+</html>

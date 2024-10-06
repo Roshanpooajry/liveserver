@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Sign Up</h2>
+            <form action="#" method="post">
+                <input type="text" placeholder="Name" required>
+                <input type="email" placeholder="Email or Phone Number" required>
+                <input type="password" placeholder="Password" required>
+                <input type="password" placeholder="Confirm Password" required>
+                <button type="submit">Sign Up</button>
+                <p>Already have an account? <a href="signin.html">Sign In</a></p>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Function to create a new user
+const createUser = async (name, email, phone, password) => {
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({
+        name,
+        email,
+        phone,
+        password: hashedPassword,
+    });
+
+    try {
+        const savedUser = await newUser.save();
+        console.log('User created successfully:', savedUser);
+        return savedUser; // Return the saved user object
+    } catch (error) {
+        console.error('Error creating user:', error);
+        return null; // Return null if there's an error
+    }
+};
+
+    </script>
+</body>
+</html>
